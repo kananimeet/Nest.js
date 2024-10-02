@@ -8,15 +8,25 @@ import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
   @IsNotEmpty()
   @IsString()  
-  AdminName: string;
+  adminname: string;
 
   @IsEmail()
-  Email: string;
+  email: string;
 
   @IsNotEmpty()
   @IsString()
   @Length(6)
-  Password: string
+  password: string
+}
+
+class AdminDtos{
+  @IsEmail()
+  email:string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(6)
+  password:string;
 }
 
 @Controller('admin')
@@ -27,24 +37,26 @@ constructor(private readonly adminService: AdminService){}
 @Post('register')
 
 async register(@Body() body:AdminDto): Promise<Admin>{
-    return await this.adminService.Create(body.AdminName,body.Email,body.Password);
+    return await this.adminService.Create(body.adminname,body.email,body.password);
     }
 
     @Post('login')
-    async login(@Body() body: AdminDto) {
-      const user = await this.adminService.findByEmail(body.Email);
-      if (user && (await bcrypt.compare(body.Password, user.Password))){
-        return { message: 'Login successful', Welcome: user.AdminName };
+    async login(@Body() body: AdminDtos) {
+      const user = await this.adminService.findByEmail(body.email);
+      try{
+      if (user && (await bcrypt.compare(body.password, user.password))){
+        return { message: 'Login successful', Welcome: user.adminname };
       }
+    }catch{
       return { message: 'Not Match Password' };
     }
+  }
 
   @Delete(':id')
   async delete(@Param('id') id: number) {
   await this.adminService.deleteById(id);
   return { message: 'Admin deleted successfully' };
   }
-
 
   @Put(':id')
   async update(@Param('id') id: number, @Body() body: Admin) {

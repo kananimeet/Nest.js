@@ -9,23 +9,23 @@ export class User {
     id: number;
 
     @Column({ length: 100 })
-    Firstname: string;
+    firstname: string;
     
     @Column({ length: 100 })
-    Last_name: string;
+    lastname: string;
 
     
     @Column({ length: 100 })
-    Nickname: string;
+    nickname: string;
 
     @Column({ unique: true })
-     Email: string;
+    email: string;
 
     @Column({ length: 100 })
-    Password: string;
+    password: string;
 
     @Column({ length: 100 })
-    Conf_Password: string;
+    confirmpassword: string;
   
 }
 

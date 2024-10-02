@@ -8,37 +8,37 @@ class AuthDto {
 
   @IsNotEmpty()
   @IsString()
-  Firstname: string;
+  firstname: string;
 
   @IsNotEmpty()
   @IsString()
-  Last_name: string;
+  lastname: string;
 
   @IsNotEmpty()
   @IsString()
-  Nickname: string;
+  nickname: string;
 
   @IsEmail()
-  Email: string;
+  email: string;
 
   @IsNotEmpty()
   @IsString()
   @Length(6)
-  Password: string;
+  password: string;
 
   @IsNotEmpty()
- Conf_Password: string;
+ confirmpassword: string;
 }
 
 // login Dto
 class AuthDtos{
   @IsEmail()
-  Email: string;
+  email: string;
 
   @IsNotEmpty()
   @IsString()
   @Length(6)
-  Password: string;   
+  password: string;   
 }
 
 @Controller('user')
@@ -48,11 +48,17 @@ export class UserController {
 
   @Post('register')
     async register(@Body() body: AuthDto): Promise<User> {
-    if(body.Password === body.Conf_Password){  
+    try
+  {  
+    if(body.password === body.confirmpassword){  
      
-      return this.userService.create(body.Firstname, body.Last_name,body.Nickname, body.Email, body.Password,body.Conf_Password,);
+      return this.userService.create(body.firstname, body.lastname,body.nickname, body.email, body.password,body.confirmpassword,);
     }
-  throw new HttpException("Not match Conf_Password",404);
+  }
+  catch
+  {
+    throw new HttpException("Not match Conf_Password",505);
+  }
 }
 
 
@@ -72,12 +78,15 @@ export class UserController {
 
   @Post('login')
   async login(@Body() body: AuthDtos) {
-    const user = await this.userService.findByEmail(body.Email);
-    if (user && (await bcrypt.compare(body.Password, user.Password))){
-      return { message: 'Login successful', Welcome: user.Firstname };
+    const user = await this.userService.findByEmail(body.email);
+    try{
+    if (user && (await bcrypt.compare(body.password, user.password))){
+      return { message: 'Login successful', Welcome: user.firstname };
     }
+  }catch {
     return { message: 'Not Match Password' };
   }
+}
 
   
   @Delete(':id')

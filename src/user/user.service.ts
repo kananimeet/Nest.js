@@ -11,21 +11,21 @@ export class UserService {
   constructor(@InjectRepository(User)private readonly userRegister: Repository<User>,) {}
 
     async create(
-    Firstname: string,
-    Last_name:string,
-    Nickname:string,
-    Email:string,
-    Password:string,
-    Conf_Password:string): Promise<User> {
+    firstname: string,
+    lastname:string,
+    nickname:string,
+    email:string,
+    password:string,
+    confirmpassword:string): Promise<User> {
 
-    const hashedPassword = await bcrypt.hash(Password,10);  
-    const user = this.userRegister.create({Firstname,Last_name,Nickname, Email, Password: hashedPassword,Conf_Password: hashedPassword});
+    const hashedPassword = await bcrypt.hash(password,10);  
+    const user = this.userRegister.create({firstname,lastname,nickname, email, password: hashedPassword,confirmpassword: hashedPassword});
     return this.userRegister.save(user);
   }
 
   
-    async findByEmail(Email: string): Promise<User> {
-     return this.userRegister.findOne({ where: { Email } });
+    async findByEmail(email: string): Promise<User> {
+     return this.userRegister.findOne({ where: { email } });
   }
 
  

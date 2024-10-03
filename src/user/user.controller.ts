@@ -1,45 +1,8 @@
 import { Controller,Get, Post, Body, HttpException,Delete,Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './user.entity';
-import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
-
-class AuthDto {
-
-  @IsNotEmpty()
-  @IsString()
-  firstname: string;
-
-  @IsNotEmpty()
-  @IsString()
-  lastname: string;
-
-  @IsNotEmpty()
-  @IsString()
-  nickname: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Length(6)
-  password: string;
-
-  @IsNotEmpty()
- confirmpassword: string;
-}
-
-// login Dto
-class AuthDtos{
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Length(6)
-  password: string;   
-}
+import {AuthDto,AuthDtos}from './user.dto'
 
 @Controller('user')
 export class UserController {
@@ -72,9 +35,6 @@ export class UserController {
 //       throw new HttpException ('No User Found',404);
 //   }
 // }
-
-
-
 
   @Post('login')
   async login(@Body() body: AuthDtos) {

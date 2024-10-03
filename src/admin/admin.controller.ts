@@ -2,33 +2,10 @@ import { Controller,Get,Post,Delete,Body,Param,Put} from '@nestjs/common';
 import { AdminService} from './admin.service';
 import { Admin } from './admin.entity';
 import * as bcrypt from 'bcryptjs';
-import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
+import { AdminDto,AdminDtos } from './admin.dto';
 
-  class AdminDto{
 
-  @IsNotEmpty()
-  @IsString()  
-  adminname: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Length(6)
-  password: string
-}
-
-class AdminDtos{
-  @IsEmail()
-  email:string;
-
-  @IsNotEmpty()
-  @IsString()
-  @Length(6)
-  password:string;
-}
-
+ 
 @Controller('admin')
 export class AdminController {
 

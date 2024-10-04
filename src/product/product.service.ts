@@ -21,7 +21,7 @@ constructor(@InjectRepository(Product) private readonly addProduct: Repository<P
             const imagePaths = await this.handleFileUpload(imageFiles);
             const product = this.addProduct.create({ productName, price, description, imagePaths });
             return this.addProduct.save(product);
-        } catch (error) {
+            }catch (error) {
             throw new HttpException("Not Saved",500);
         }
     }
@@ -114,11 +114,5 @@ constructor(@InjectRepository(Product) private readonly addProduct: Repository<P
         }
 
     }
-
-
-
-
-    
-    
 
 }

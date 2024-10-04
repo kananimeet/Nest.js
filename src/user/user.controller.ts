@@ -7,7 +7,6 @@ import {AuthDto,AuthDtos}from './user.dto'
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  
 
   @Post('register')
     async register(@Body() body: AuthDto): Promise<User> {
@@ -24,17 +23,6 @@ export class UserController {
   }
 }
 
-
-// @Get()
-// public async getUser(): Promise<User[]> {
-//   try {
-//       const finds = await this.userService.getUser();
-//       return finds;
-//   } 
-//   catch (error) {
-//       throw new HttpException ('No User Found',404);
-//   }
-// }
 
   @Post('login')
   async login(@Body() body: AuthDtos) {

@@ -3,20 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcryptjs';
-import { UserAccountService } from 'src/useraccount/useraccount.service';
-
 
 @Injectable()
 export class UserService {
+  validateUser(email: string, password: string) {
+    throw new Error('Method not implemented.');
+  }
+    findById: any;
+   
   
- 
-   constructor(
-  @InjectRepository(User) private readonly userRegister: Repository<User>,
-  private readonly userAccountService: UserAccountService,
-) {}
-
-
-      async create(
+constructor(@InjectRepository(User) private readonly userRegister: Repository<User>,) {}
+async create(
       firstname: string,
       lastname:string,
       nickname:string,
@@ -29,18 +26,15 @@ export class UserService {
       return this.userRegister.save(user);
     }
 
-  
-    async findByEmail(email: string): Promise<User> {
+    
+    
+     async findByEmail(email: string): Promise<User> {
      return this.userRegister.findOne({ where: { email } });
   }
 
- 
-  async deleteById(id: number): Promise<void> {
+
+    async deleteById(id: number): Promise<void> {
     await this.userRegister.delete(id);
   }  
 
-    
-    async handleUserAccount(user: User): Promise<void> {
-        await this.userAccountService.processUserAccount(user);
-    }
 }

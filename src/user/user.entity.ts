@@ -14,7 +14,6 @@ export class User {
     @Column({ length: 100 })
     lastname: string;
 
-    
     @Column({ length: 100 })
     nickname: string;
 
@@ -27,5 +26,6 @@ export class User {
     @Column({ length: 100 })
     confirmpassword: string;
   
+
 }
 

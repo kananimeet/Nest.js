@@ -1,6 +1,8 @@
-import { Controller, Get, Param, Put, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Put, Body, Delete, HttpException, UseGuards, Req,Request } from '@nestjs/common';
 import { UseraccountService } from './useraccount.service';
 import { User } from '../user/user.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
 
 
 @Controller('useraccount')
@@ -8,25 +10,41 @@ export class UseraccountController {
 constructor(private readonly userAccountService: UseraccountService) {}
 
 
-  @Get(':email')
-  async findByEmail(@Param('email') email:string): Promise<{ profile: Partial<User>}> {
-    return this.userAccountService.findByEmail(email);
+  @UseGuards(JwtAuthGuard) 
+  @Get('profile')
+  async getProfile(@Req() req: any) {
+    const token = req.headers.authorization.split(' ')[1];
+    const userProfile = await this.userAccountService.getUserFromToken(token); 
+
+    if (!userProfile) {
+      throw new HttpException('User not found', 404);
+    }
+      return userProfile;
   }
-
-
-  @Put(':email/update')
-  async updateUser(
-      @Param('email') email: string,
-      @Body() userAccountData: Partial<User>
-  ): Promise<User> {
-      return this.userAccountService.updateUserAccount(email, userAccountData);
-  }
-
-  
-  @Delete(':email/delete')
-  async deleteUser(@Param('email') email: string): Promise<void> {
-      return this.userAccountService.deleteUserAccount(email);
-  }
-
  
+
+@UseGuards(JwtAuthGuard)
+@Put('account')
+async updateAccount(@Request() req, @Body() body: Partial<User>) {
+  const token = req.headers.authorization.split(' ')[1]; 
+  const decoded = await this.userAccountService.verifyToken(token); 
+  const email = decoded.email; 
+  return this.userAccountService.updateUserAccount(email, body);
 }
+ 
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('account')
+  async deleteAccount(@Request() req) {
+    const token = req.headers.authorization.split(' ')[1]; 
+    await this.userAccountService.deleteUserAccount(token);
+    return { message: 'User account deleted successfully' };
+  }
+
+
+
+}
+
+
+
+

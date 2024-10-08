@@ -1,5 +1,6 @@
 import { IsEmail, isEmail, IsNotEmpty, IsString,Length } from "class-validator";
-import { PrimaryGeneratedColumn, Column, Entity, } from "typeorm";
+import { PrimaryGeneratedColumn, Column, Entity, OneToMany, } from "typeorm";
+import { Product } from "src/product/product.entity";
 
 @Entity()
 export class User {
@@ -26,6 +27,17 @@ export class User {
     @Column({ length: 100 })
     confirmpassword: string;
   
+    @Column({ nullable: true })
+    imageUpload: string;
+  
+    @Column({ nullable: true })
+    address: string; 
 
+
+    // @OneToMany(() => Product, product => product.user) // Associate User with Product
+    // products: Product[]; 
+
+
+   
 }
 

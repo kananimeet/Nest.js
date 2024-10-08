@@ -5,7 +5,11 @@ import { AdminModule } from './admin/admin.module';
 import { ProductModule } from './product/product.module';
 import { UseraccountController } from './useraccount/useraccount.controller';
 import { UseraccountModule } from './useraccount/useraccount.module';
-
+import { JwtModule } from '@nestjs/jwt';
+import { AuthModule } from './auth/auth.module';
+import { UsershowController } from './admin/usershow/usershow.controller';
+import { UsershowService } from './admin/usershow/usershow.service';
+import { UsershowModule } from './admin/usershow/usershow.module';
 
 @Module({
     imports: [
@@ -20,13 +24,17 @@ import { UseraccountModule } from './useraccount/useraccount.module';
         autoLoadEntities: true,
       }),
       
+      
       UserModule,
       AdminModule,
       ProductModule,
-      UseraccountModule,  
+      UseraccountModule,
+      UsershowModule,  
     ],
   
-controllers: [UseraccountController],
+controllers: [UseraccountController, UsershowController],
+  
+providers: [UsershowService],
     
 })
 export class AppModule {}

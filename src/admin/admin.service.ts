@@ -33,8 +33,6 @@ export class AdminService {
     await this.adminRegister.delete(id);
   }  
 
-  
-
   async update(
    id: number,
    updateData: Partial<{ adminname: string; email: string; password: string }>,

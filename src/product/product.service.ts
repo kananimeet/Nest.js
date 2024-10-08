@@ -8,24 +8,32 @@ import { Like } from 'typeorm';
 
 @Injectable()
 export class ProductService {
-constructor(@InjectRepository(Product) private readonly addProduct: Repository<Product>,) {}
+    constructor(@InjectRepository(Product) private readonly addProduct: Repository<Product>,) {}
 
     async create(
         productName: string,
         price: number,
         description: string,
-        imageFiles: Express.Multer.File[], 
+        imageFiles: Express.Multer.File[],
+        userAddress: string, // Add address parameter
+        imageUpload: string // Add imageUpload parameter
     ): Promise<Product> {
-
         try {
             const imagePaths = await this.handleFileUpload(imageFiles);
-            const product = this.addProduct.create({ productName, price, description, imagePaths });
+            const product = this.addProduct.create({ 
+                productName, 
+                price, 
+                description, 
+                imagePaths,
+                address: userAddress, // Save the address
+                imageUpload // Save the image upload reference
+            });
             return this.addProduct.save(product);
-            }catch (error) {
-            throw new HttpException("Not Saved",500);
+        } catch (error) {
+            throw new HttpException("Not Saved", 500);
         }
     }
-
+    
 
     private validateImageUpload(files: Express.Multer.File[]): void {   
         const requiredImages = 6;
@@ -36,23 +44,22 @@ constructor(@InjectRepository(Product) private readonly addProduct: Repository<P
         }
     }
 
-    private async handleFileUpload(files: Express.Multer.File[]): Promise<string> {
+    private async handleFileUpload(files: Express.Multer.File[]): Promise<string[]> { // Return type is string[]
         const uploadPath = 'uploads/products/';
         await fs.mkdir(uploadPath, { recursive: true });
     
         const filePaths = await Promise.all(
             files.map(async (file) => {
-
                 const originalFileName = file.originalname;
                 const uniqueFileName = `${originalFileName}`;
                 const filePath = `${uploadPath}${uniqueFileName}`;
     
                 await fs.writeFile(filePath, file.buffer);
-                return filePath;
+                return filePath; // Returns a single file path
             })
         );
     
-        return filePaths.join(','); 
+        return filePaths; // Return as an array of strings
     }
     
 

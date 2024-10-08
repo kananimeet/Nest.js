@@ -23,8 +23,16 @@ export class AuthDto {
   
     @IsNotEmpty()
    confirmpassword: string;
+
+   @IsNotEmpty()
+   imageUpload: string;
+
+   
+   @IsNotEmpty()
+   address: string;
   }
   
+
   // login Dto
  export class AuthDtos{
     @IsEmail()

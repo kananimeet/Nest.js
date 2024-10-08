@@ -1,13 +1,16 @@
 import { ProductService } from './product.service';
+import { UseraccountService } from 'src/useraccount/useraccount.service';
 import { Product } from './product.entity';
-import { Body,Get,Put,Query,Param,Delete, Controller, Post, UseInterceptors, UploadedFiles, BadRequestException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Get, Put, Query, Param, Delete, Controller, Post, UseInterceptors, UploadedFiles, BadRequestException } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { IsString, IsNotEmpty, IsNumber, Min, MaxLength, validateSync } from 'class-validator';
-
+import { IsString, IsNotEmpty, MaxLength, validateSync } from 'class-validator';
 
 @Controller('products')
-    export class ProductController {
-    constructor(private readonly productService: ProductService) {}
+export class ProductController {
+    constructor(
+        private readonly productService: ProductService,
+        private readonly userAccountService: UseraccountService 
+    ) {}
 
     @Post()
     @UseInterceptors(FilesInterceptor('images', 6))
@@ -16,19 +19,28 @@ import { IsString, IsNotEmpty, IsNumber, Min, MaxLength, validateSync } from 'cl
         @Body('price') price: number,
         @Body('description') description: string,
         @UploadedFiles() files: Express.Multer.File[],
+        @Body('userEmail') userEmail: string 
     ) {
-       
         const validationErrors = this.validateProductInput(productName, price, description);
 
-        
         if (validationErrors.length > 0) {
             throw new BadRequestException(validationErrors);
         }
 
-        return this.productService.create(productName, price, description, files);
+      
+        const userAccount = await this.userAccountService.findByEmail(userEmail);
+        if (!userAccount) {
+            throw new BadRequestException("User account not found");
+        }
+
+        const { profile } = userAccount;
+        const userAddress = profile.address; 
+        const imageUpload = profile.imageUpload; 
+
+        
+        return this.productService.create(productName, price, description, files, userAddress, imageUpload);
     }
 
-   
     private validateProductInput(productName: string, price: number, description: string) {
         class ProductInput {
             @IsString()
@@ -56,7 +68,6 @@ import { IsString, IsNotEmpty, IsNumber, Min, MaxLength, validateSync } from 'cl
     }
 
 
-
     @Get('search')
     async search(@Query('productName') name: string): Promise<Product[]> {
         return this.productService.findByName(name);
@@ -82,4 +93,3 @@ import { IsString, IsNotEmpty, IsNumber, Min, MaxLength, validateSync } from 'cl
         return {message:"product deleted successfully"}
     }
 }
-

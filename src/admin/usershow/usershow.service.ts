@@ -1,19 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/user.entity';
+import { AdminService } from 'src/admin/admin.service';
 
 @Injectable()
 export class UsershowService {
-  constructor(private readonly userService: UserService) {} // Inject UserService
+  constructor(
+    private readonly userService: UserService,
+    private readonly adminService: AdminService,
+  ) {}
 
-  async getAllUsers(): Promise<User[]> {
-    return this.userService.findAll(); // Call the findAll method to get user data
+  async getAllUsers(token: string): Promise<User[]> {
+    const isValidToken = await this.adminService.validateToken(token);
+    if (!isValidToken) {
+      throw new UnauthorizedException('Access denied. Invalid token.');
+    }
+    return this.userService.findAll();
   }
 
-
-  async deleteUserById(id: number): Promise<void> {
-    await this.userService.deleteById(id); // Call the deleteById method in UserService
+  async deleteUserById(id: number, token: string): Promise<void> {
+    const isValidToken = await this.adminService.validateToken(token);
+    if (!isValidToken) {
+      throw new UnauthorizedException('Access denied. Invalid token.');
+    }
+    await this.userService.deleteById(id);
   }
-
-
 }

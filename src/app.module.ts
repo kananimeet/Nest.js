@@ -10,6 +10,9 @@ import { AuthModule } from './auth/auth.module';
 import { UsershowController } from './admin/usershow/usershow.controller';
 import { UsershowService } from './admin/usershow/usershow.service';
 import { UsershowModule } from './admin/usershow/usershow.module';
+import { UserproductController } from './admin/userproduct/userproduct.controller';
+import { UserproductService } from './admin/userproduct/userproduct.service';
+import { UserproductModule } from './admin/userproduct/userproduct.module';
 
 @Module({
     imports: [
@@ -29,12 +32,13 @@ import { UsershowModule } from './admin/usershow/usershow.module';
       AdminModule,
       ProductModule,
       UseraccountModule,
-      UsershowModule,  
+      UsershowModule,
+      UserproductModule,  
     ],
   
-controllers: [UseraccountController, UsershowController],
+controllers: [UseraccountController, UsershowController, UserproductController],
   
-providers: [UsershowService],
+providers: [UsershowService, UserproductService],
     
 })
 export class AppModule {}

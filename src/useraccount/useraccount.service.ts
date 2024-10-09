@@ -102,5 +102,3 @@ async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
   }
 
 }
-
-

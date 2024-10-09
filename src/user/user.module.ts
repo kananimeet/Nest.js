@@ -9,12 +9,13 @@ import { UseraccountService } from 'src/useraccount/useraccount.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { AdminModule } from 'src/admin/admin.module';
 
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User]),AdminModule,
     JwtModule.register({
       secret: 'your_jwt_secret', // Use your own secret key
       signOptions: { expiresIn: '1h' }, // Set expiration time as needed

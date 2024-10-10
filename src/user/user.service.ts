@@ -11,6 +11,7 @@ export class UserService {
   private tokenBlacklist: string[];
   
   constructor(
+
     @InjectRepository(User)
     private readonly userRegister: Repository<User>,
     private readonly jwtService: JwtService,
@@ -19,6 +20,22 @@ export class UserService {
   {
     this.tokenBlacklist = [];
   } 
+
+
+
+  async getUserFromToken(token: string): Promise<User> {
+    try {
+      const decoded = this.jwtService.verify(token); // Decode the token
+      const user = await this.findByEmail(decoded.email); // Fetch user by email
+      if (!user) {
+        throw new HttpException('User not found', 404);
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException('Invalid token', 401);
+    }
+  }
+
 
   async create(
     firstname: string,

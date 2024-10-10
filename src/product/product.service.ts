@@ -4,21 +4,29 @@ import { Repository } from 'typeorm';
 import { Product } from './product.entity';
 import { promises as fs } from 'fs';
 import { Like } from 'typeorm';
+import { UseraccountService } from 'src/useraccount/useraccount.service'; 
 
 
 @Injectable()
 export class ProductService {
-    constructor(@InjectRepository(Product) private readonly addProduct: Repository<Product>,) {}
+    constructor(
+        @InjectRepository(Product) private readonly addProduct: Repository<Product>,
+        private readonly userAccountService: UseraccountService,
+        
+    ) {}
 
     async create(
         productName: string,
         price: number,
         description: string,
         imageFiles: Express.Multer.File[],
-        userAddress: string,
-        imageUpload: string 
+        userToken: string 
     ): Promise<Product> {
         try {
+            const userProfile = await this.userAccountService.getUserFromToken(userToken);
+            const userAddress = userProfile.address;
+            const imageUpload = userProfile.imageUpload;
+
             const imagePaths = await this.handleFileUpload(imageFiles);
             const product = this.addProduct.create({ 
                 productName, 
@@ -30,17 +38,16 @@ export class ProductService {
             });
             return this.addProduct.save(product);
         } catch (error) {
-            throw new HttpException("Not Saved", 500);
+            throw new HttpException("Not Saved", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     private validateImageUpload(files: Express.Multer.File[]): void {   
         const requiredImages = 6;
         const maxSizeInBytes = 10 * 1024 * 1024; 
         
         if (files.length !== requiredImages) {
-            throw new HttpException("You must upload exactly 6 images", 500);
+            throw new HttpException("You must upload exactly 6 images", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -69,28 +76,32 @@ export class ProductService {
                 where: { productName: Like(`%${productName}%`) },
             });
             if (products.length === 0) {
-                throw new HttpException("Product not found", 404);
+                throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
             }
             return products;
         } catch (error) {
-            throw new HttpException("An error occurred while searching for products",500);
+            throw new HttpException("An error occurred while searching for products", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
     async update(
         id: number,
+        userToken: string,
         productName?: string,
         price?: number,
         description?: string,
-        imageFiles?: Express.Multer.File[]
+        imageFiles?: Express.Multer.File[],
     ): Promise<Product> {
-
         const product = await this.addProduct.findOne({ where: { id } });
 
         if (!product) {
-            throw new HttpException("Product not found", 404);
+            throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
         }
+
+        
+        const userProfile = await this.userAccountService.getUserFromToken(userToken);
+        product.address = userProfile.address;
+        product.imageUpload = userProfile.imageUpload; 
 
         if (productName) product.productName = productName;
         if (price !== undefined) product.price = price;
@@ -106,37 +117,34 @@ export class ProductService {
         try {
             return this.addProduct.save(product);
         } catch (error) {
-            throw new HttpException("Product not updated", 500);
+            throw new HttpException("Product not updated", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-    async deleteById(id:number):Promise<Product>{
-        try{
-        await this.addProduct.delete(id);
-        return
-    
-        }catch{
-            throw new HttpException("Not Delete Product",500);
+    async deleteById(id:number):Promise<Product> {
+        try {
+            await this.addProduct.delete(id);
+            return null;
+        } catch (error) {
+            throw new HttpException("Not Delete Product", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
+
 
     //Admin side fetched product
-
-    async findAll():Promise<Product[]>{
+    async findAll():Promise<Product[]> {
         return this.addProduct.find();
     }
 
     async Delete(id: number): Promise<void> {
         await this.addProduct.delete(id);
-      }  
+    }  
 
 
+
+    //userchat side transfer productName and Images
+
+
+    
 }
-
-
-
-
-
 

@@ -13,6 +13,10 @@ import { UsershowModule } from './admin/usershow/usershow.module';
 import { UserproductController } from './admin/userproduct/userproduct.controller';
 import { UserproductService } from './admin/userproduct/userproduct.service';
 import { UserproductModule } from './admin/userproduct/userproduct.module';
+import { UserchatController } from './userchat/userchat.controller';
+import { UserchatService } from './userchat/userchat.service';
+import { UserchatModule } from './userchat/userchat.module';
+
 
 @Module({
     imports: [
@@ -33,12 +37,14 @@ import { UserproductModule } from './admin/userproduct/userproduct.module';
       ProductModule,
       UseraccountModule,
       UsershowModule,
-      UserproductModule,  
+      UserproductModule,
+      UserchatModule,
+       
     ],
   
-controllers: [UseraccountController, UsershowController, UserproductController],
+controllers: [UseraccountController, UsershowController, UserproductController, UserchatController],
   
-providers: [UsershowService, UserproductService],
+providers: [UsershowService, UserproductService, UserchatService],
     
 })
 export class AppModule {}

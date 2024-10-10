@@ -14,6 +14,7 @@ export class UserController {
     private readonly userAccountService: UseraccountService,
   ) {}
 
+
   @Post('register')
   async register(@Body() body: AuthDto): Promise<User> {
     try {
@@ -46,6 +47,7 @@ export class UserController {
       throw new HttpException('Registration failed', 500);
     }
   }
+
 
 
   @Post('login')

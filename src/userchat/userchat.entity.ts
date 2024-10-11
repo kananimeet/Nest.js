@@ -1,25 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('userchat')
-export class UserChat {
+@Entity()
+export class ChatData {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  firstname: string; // User's first name
+  firstname: string; 
 
   @Column()
-  imageUpload: string; // User's uploaded image path
+  imageUpload: string; 
 
   @Column()
-  address: string; // User's address
+  address: string; 
 
-  @Column('text')
-  message: string; // Chat message
+  @Column()
+  productName: string; 
 
-  @CreateDateColumn()
-  createdAt: Date; // Timestamp of when the chat was created
+  @Column('text', { array: true })
+  productImage: string[]; 
 
-  @CreateDateColumn()
-  updatedAt: Date; // Timestamp of when the chat was last updated
+  @Column()
+  message: string; // Ensure this property exists
 }

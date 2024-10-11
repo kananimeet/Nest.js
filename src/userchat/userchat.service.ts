@@ -2,12 +2,16 @@
   import { UserService } from 'src/user/user.service';
   import { User } from 'src/user/user.entity'; 
   import { ProductService } from 'src/product/product.service';
+import { ChatData } from './userchat.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
   @Injectable()
   export class UserchatService {
     constructor(
       private readonly userService: UserService,
-      private readonly productService: ProductService
+      private readonly productService: ProductService,
+      @InjectRepository(ChatData) private readonly chatDataRepository: Repository<ChatData>,
     ) {}
 
     async getUserInfo(token: string): Promise<{ firstname: string; imageUpload: string; address: string; }> {
@@ -38,4 +42,28 @@
         message: message,
       };
     }
+
+
+
+    async saveChatData(token: string, productName: string, message: string): Promise<ChatData> {
+      const userInfo = await this.getUserInfo(token);
+      const productDetails = await this.getProductDetails(productName, message);
+      
+      // Ensure productImage is passed correctly as an array of strings
+      const chatData: ChatData = this.chatDataRepository.create({
+        firstname: userInfo.firstname,
+        imageUpload: userInfo.imageUpload,
+        address: userInfo.address,
+        productName: productDetails.productName,
+        productImage: Array.isArray(productDetails.productImage) ? productDetails.productImage : [productDetails.productImage], // Ensure it's an array
+        message: productDetails.message,
+      });
+    
+      return await this.chatDataRepository.save(chatData);
+    }
+
+
   }
+
+
+

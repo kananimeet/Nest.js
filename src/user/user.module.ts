@@ -17,8 +17,8 @@ import { AdminModule } from 'src/admin/admin.module';
   imports: [
     TypeOrmModule.forFeature([User]),AdminModule,
     JwtModule.register({
-      secret: 'your_jwt_secret', // Use your own secret key
-      signOptions: { expiresIn: '1h' }, // Set expiration time as needed
+      secret: 'your_jwt_secret',
+      signOptions: { expiresIn: '1h' }, 
     }),
   ],
   providers: [UserService, UseraccountService,JwtStrategy],

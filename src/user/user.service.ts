@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UseraccountService } from 'src/useraccount/useraccount.service';
+import { UserchatService } from 'src/userchat/userchat.service';
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,7 @@ export class UserService {
     private readonly userRegister: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly userAccountService: UseraccountService, 
+    
   )
   {
     this.tokenBlacklist = [];

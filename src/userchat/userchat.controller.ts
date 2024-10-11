@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Headers, Body, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Param, Headers, Body, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { UserchatService } from './userchat.service';
 
 @Controller('chat')
@@ -31,10 +31,16 @@ export class UserchatController {
             firstname: userInfo.firstname,
             imageUpload: userInfo.imageUpload,
             address: userInfo.address,
-            productName: productDetails.productName,
+            productName: productDetails.productName,    
             productImage: productDetails.productImage,
             message: productDetails.message,
         };
     }
+
 }
+
+
+
+
+
 

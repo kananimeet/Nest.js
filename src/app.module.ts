@@ -16,6 +16,10 @@ import { UserproductModule } from './admin/userproduct/userproduct.module';
 import { UserchatController } from './userchat/userchat.controller';
 import { UserchatService } from './userchat/userchat.service';
 import { UserchatModule } from './userchat/userchat.module';
+import { ChatshowController } from './chatshow/chatshow.controller';
+import { ChatshowService } from './chatshow/chatshow.service';
+import { ChatshowModule } from './chatshow/chatshow.module';
+
 
 
 @Module({
@@ -29,6 +33,7 @@ import { UserchatModule } from './userchat/userchat.module';
         database: 'nest_js',
         synchronize: true,
         autoLoadEntities: true,
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
       }),
       
       
@@ -39,12 +44,14 @@ import { UserchatModule } from './userchat/userchat.module';
       UsershowModule,
       UserproductModule,
       UserchatModule,
+      ChatshowModule,
+      
        
     ],
   
-controllers: [UseraccountController, UsershowController, UserproductController, UserchatController],
+controllers: [UseraccountController, UsershowController, UserproductController, UserchatController, ChatshowController],
   
-providers: [UsershowService, UserproductService, UserchatService],
+providers: [UsershowService, UserproductService, UserchatService, ChatshowService],
     
 })
 export class AppModule {}

@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Param, Headers, Body, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { UserchatService } from './userchat.service';
 
+
 @Controller('chat')
 export class UserchatController {
     constructor(private readonly userchatService: UserchatService) {}
@@ -38,9 +39,4 @@ export class UserchatController {
     }
 
 }
-
-
-
-
-
 

@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, forwardRef, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -12,23 +12,22 @@ export class UserService {
   private tokenBlacklist: string[];
   
   constructor(
-
+    
     @InjectRepository(User)
     private readonly userRegister: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly userAccountService: UseraccountService, 
+ 
     
   )
   {
     this.tokenBlacklist = [];
   } 
 
-
-
   async getUserFromToken(token: string): Promise<User> {
     try {
-      const decoded = this.jwtService.verify(token); // Decode the token
-      const user = await this.findByEmail(decoded.email); // Fetch user by email
+      const decoded = this.jwtService.verify(token); 
+      const user = await this.findByEmail(decoded.email); 
       if (!user) {
         throw new HttpException('User not found', 404);
       }

@@ -15,28 +15,36 @@ export class UserchatController {
         return this.userchatService.getUserInfo(token);
     }
 
-    @Post('product-info/:productName')
-    async getProductInfo(
-        @Param('productName') productName: string,
-        @Headers('authorization') authorization: string,
-        @Body('message') message: string 
-    ): Promise<{ firstname: string; imageUpload: string; address: string; productName: string; productImage: string[]; message: string }> {
-        const token = authorization?.replace('Bearer ', '');
-        if (!token) {
-            throw new HttpException('Authorization token is required', HttpStatus.UNAUTHORIZED);
-        }
 
-        const userInfo = await this.userchatService.getUserInfo(token);
-        const productDetails = await this.userchatService.getProductDetails(productName, message);
-        return {
-            firstname: userInfo.firstname,
-            imageUpload: userInfo.imageUpload,
-            address: userInfo.address,
-            productName: productDetails.productName,    
-            productImage: productDetails.productImage,
-            message: productDetails.message,
-        };
+@Post('product-info/:productName')
+async getProductInfo(
+    @Param('productName') productName: string,
+    @Headers('authorization') authorization: string,
+    @Body('message') message: string 
+): Promise<{
+    firstname: string;
+    imageUpload: string;
+    address: string;
+    productName: string;
+    productImage: string[];
+    message: string;
+}> {
+    const token = authorization?.replace('Bearer ', '');
+    if (!token) {
+        throw new HttpException('Authorization token is required', HttpStatus.UNAUTHORIZED);
     }
 
+    const userInfo = await this.userchatService.getUserInfo(token);
+    const productDetails = await this.userchatService.getProductDetails(token, productName, message);
+    
+    return {
+        firstname: userInfo.firstname,
+        imageUpload: userInfo.imageUpload,
+        address: userInfo.address,
+        productName: productDetails.productName,    
+        productImage: productDetails.productImage,
+        message: productDetails.message,
+    };
+}
 }
 

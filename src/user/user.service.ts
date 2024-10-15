@@ -12,13 +12,10 @@ export class UserService {
   private tokenBlacklist: string[];
   
   constructor(
-    
     @InjectRepository(User)
     private readonly userRegister: Repository<User>,
     private readonly jwtService: JwtService,
     private readonly userAccountService: UseraccountService, 
- 
-    
   )
   {
     this.tokenBlacklist = [];
@@ -67,14 +64,10 @@ export class UserService {
   async findByEmail(email: string): Promise<User> {
     return this.userRegister.findOne({ where: { email } });
   }
-
-
   async findAll(): Promise<User[]> {
     return this.userRegister.find(); 
   }
   
-
-
   async deleteById(id: number): Promise<void> {
     await this.userRegister.delete(id);
   }
@@ -91,8 +84,6 @@ export class UserService {
     };
     return this.jwtService.sign(payload);
   }
-
-
   async logout(token: string): Promise<void> {
     this.tokenBlacklist.push(token);
   }
@@ -100,8 +91,6 @@ export class UserService {
   isTokenBlacklisted(token: string): boolean {
     return this.tokenBlacklist.includes(token);
   }
-
-
 }
 
 

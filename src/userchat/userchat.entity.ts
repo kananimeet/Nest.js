@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('user_chat')  // Table name in the database
-export class UserChat {
+@Entity()
+export class ProductChat {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -17,12 +17,18 @@ export class UserChat {
   @Column()
   productName: string;
 
-  @Column('json')  // Assuming images can be stored as an array or object
+  @Column('json')  
   productImage: string[];
 
   @Column()
   message: string;
 
+  @Column({ nullable: true }) 
+  replay: string; 
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 }
+
+
+

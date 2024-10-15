@@ -1,10 +1,11 @@
-import { Controller, Post, Put, Body, Param,Request, UseGuards, UseInterceptors, UploadedFiles, Query, Get, Delete } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'; // Adjust this import based on your file structure
+import { Controller, Post, Put, Body, Param,Request, UseGuards, UseInterceptors, UploadedFiles, Query, Get, Delete, HttpException, HttpStatus,Headers, UnauthorizedException } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'; 
 import { ProductService } from './product.service';
 import { UseraccountService } from 'src/useraccount/useraccount.service';
 import { Product } from './product.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { IsNotEmpty, IsString, MaxLength, validateSync } from 'class-validator';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @Controller('products')
@@ -16,8 +17,8 @@ export class ProductController {
 
 
   @Post()
-  @UseGuards(JwtAuthGuard) // Protect this route
-  @UseInterceptors(FilesInterceptor('images', 6)) // Ensure to upload files
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FilesInterceptor('images', 6)) 
   async createProduct(
       @Body('productName') productName: string,
       @Body('price') price: number,
@@ -25,11 +26,16 @@ export class ProductController {
       @UploadedFiles() files: Express.Multer.File[],
       @Request() req: any
   ) {
-      const token = req.headers.authorization.split(' ')[1]; // Extract the token
+      const token = req.headers.authorization.split(' ')[1];
       return this.productService.create(productName, price, description, files, token);
   }
 
 
+  @Get('all')
+  @UseGuards(AuthGuard('jwt'))
+  async findAll(): Promise<Product[]> {
+      return this.productService.findAll();
+  }
 
 
   @Get('search')
@@ -39,7 +45,7 @@ export class ProductController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard) // Protect this route
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FilesInterceptor('images', 6))
   async updateProduct(
       @Param('id') id: number,
@@ -50,7 +56,7 @@ export class ProductController {
       @UploadedFiles() imageFiles?: Express.Multer.File[],
      
   ) {
-      const token = req.headers.authorization.split(' ')[1]; // Extract the token
+      const token = req.headers.authorization.split(' ')[1];
       return this.productService.update(id,token, productName, price, description, imageFiles);
   }
 

@@ -22,12 +22,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
 
-
   async validates(payload: any) {
-    console.log('Payload:', payload); // Log the payload
+    console.log('Payload:', payload); 
     const admin = await this.adminService.findByEmail(payload.email);
     if (!admin) {
-        console.log('Unauthorized - Admin not found'); // Log if admin not found
+        console.log('Unauthorized - Admin not found'); 
         throw new UnauthorizedException();
     }
     return admin;

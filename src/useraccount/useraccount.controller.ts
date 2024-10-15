@@ -40,9 +40,6 @@ async updateAccount(@Request() req, @Body() body: Partial<User>) {
     await this.userAccountService.deleteUserAccount(token);
     return { message: 'User account deleted successfully' };
   }
-
-
-
 }
 
 

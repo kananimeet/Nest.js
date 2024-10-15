@@ -1,36 +1,9 @@
-// import { Controller, Delete, Get, Param } from '@nestjs/common';
-// import { Product } from 'src/product/product.entity';
-// import { UserproductService } from './userproduct.service';
-// import { ProductService } from 'src/product/product.service';
-
-
-// @Controller('userproduct')
-// export class UserproductController {
-//     constructor(private readonly userProductService: UserproductService,
-//                 private readonly productService:ProductService){} 
-
-
-
-// @Get('products')
-// async getProduct():Promise<Product[]>{
-//     return this.productService.findAll();
-// }
-
-// @Delete(':id')
-//   async Delete(@Param('id') id: number){
-//   await this.productService.Delete(id);
-//   return {message :"Success Delete UserProduct"}
-
-//   }
-// }
-
-
-
 import { Controller, Delete, Get, Param, Headers, UnauthorizedException } from '@nestjs/common';
 import { Product } from 'src/product/product.entity';
 import { UserproductService } from './userproduct.service';
 import { ProductService } from 'src/product/product.service';
 import { AdminService } from 'src/admin/admin.service';
+import { AllproductService } from 'src/allproduct/allproduct.service';
 
 @Controller('userproduct')
 export class UserproductController {
@@ -38,6 +11,7 @@ export class UserproductController {
     private readonly userProductService: UserproductService,
     private readonly productService: ProductService,
     private readonly adminService: AdminService,
+    private readonly allProductService: AllproductService,
   ) {}
 
   @Get('products')
@@ -49,6 +23,13 @@ export class UserproductController {
     }
     return this.productService.findAll();
   }
+
+
+  @Get('all-products') 
+  async getAllProducts(): Promise<Pick<Product, 'productName' | 'address' | 'price' | 'imagePaths'>[]> {
+    return this.allProductService.getAllProducts(); 
+  }
+  
 
   @Delete(':id')
   async deleteProduct(

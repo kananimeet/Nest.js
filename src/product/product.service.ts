@@ -6,6 +6,7 @@ import { promises as fs } from 'fs';
 import { Like } from 'typeorm';
 import { UseraccountService } from 'src/useraccount/useraccount.service'; 
 import { UserchatService } from 'src/userchat/userchat.service';
+import { UserService } from 'src/user/user.service';
 
 
 @Injectable()
@@ -13,10 +14,9 @@ export class ProductService {
     constructor(
         @InjectRepository(Product) private readonly addProduct: Repository<Product>,
         private readonly userAccountService: UseraccountService,
-       
-    ) {}
-
-    async create(
+         
+       ) {}
+        async create(
         productName: string,
         price: number,
         description: string,
@@ -27,7 +27,6 @@ export class ProductService {
             const userProfile = await this.userAccountService.getUserFromToken(userToken);
             const userAddress = userProfile.address;
             const imageUpload = userProfile.imageUpload;
-
             const imagePaths = await this.handleFileUpload(imageFiles);
             const product = this.addProduct.create({ 
                 productName, 
@@ -111,7 +110,6 @@ export class ProductService {
         if (imageFiles && imageFiles.length > 0) {
             this.validateImageUpload(imageFiles);
             const newImagePaths = await this.handleFileUpload(imageFiles);
-
             product.imagePaths = newImagePaths;
         }
 
@@ -122,6 +120,7 @@ export class ProductService {
         }
     }
 
+    
     async deleteById(id:number):Promise<Product> {
         try {
             await this.addProduct.delete(id);
@@ -132,6 +131,25 @@ export class ProductService {
     }
 
 
+
+    async findAllByUser(userToken: string): Promise<Product[]> {
+        try {
+            const userProfile = await this.userAccountService.getUserFromToken(userToken);
+            const products = await this.addProduct.find({
+                where: { address: userProfile.address }, // Assuming 'address' is used to identify user products
+            });
+
+            if (products.length === 0) {
+                throw new HttpException("No products found for this user", HttpStatus.NOT_FOUND);
+            }
+            return products;
+        } catch (error) {
+            throw new HttpException("An error occurred while fetching user's products", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
     //Admin side fetched product
     async findAll():Promise<Product[]> {
         return this.addProduct.find();
@@ -139,13 +157,5 @@ export class ProductService {
 
     async Delete(id: number): Promise<void> {
         await this.addProduct.delete(id);
-    }  
-
-
-
-    //userchat side transfer productName and Images
-
-
-    
+    }     
 }
-

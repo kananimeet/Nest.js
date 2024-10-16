@@ -51,22 +51,20 @@ export class ProductService {
         }
     }
 
+
     private async handleFileUpload(files: Express.Multer.File[]): Promise<string[]> { 
         const uploadPath = 'uploads/products/';
         await fs.mkdir(uploadPath, { recursive: true });
-    
         const filePaths = await Promise.all(
             files.map(async (file) => {
                 const originalFileName = file.originalname;
                 const uniqueFileName = `${originalFileName}`;
                 const filePath = `${uploadPath}${uniqueFileName}`;
-    
                 await fs.writeFile(filePath, file.buffer);
                 return filePath;
             })
         );
-    
-        return filePaths; 
+      return filePaths; 
     }
     
 
@@ -136,7 +134,7 @@ export class ProductService {
         try {
             const userProfile = await this.userAccountService.getUserFromToken(userToken);
             const products = await this.addProduct.find({
-                where: { address: userProfile.address }, // Assuming 'address' is used to identify user products
+                where: { address: userProfile.address },
             });
 
             if (products.length === 0) {
@@ -148,8 +146,6 @@ export class ProductService {
         }
     }
 
-
-
     //Admin side fetched product
     async findAll():Promise<Product[]> {
         return this.addProduct.find();
@@ -157,5 +153,21 @@ export class ProductService {
 
     async Delete(id: number): Promise<void> {
         await this.addProduct.delete(id);
-    }     
+    }    
+    
+    
+    
+    async findById(id: number): Promise<Product> {
+        const product = await this.addProduct.findOne({ where: { id } });
+    
+        if (!product) {
+            throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
+        }
+     return product;
+    }
+    
+
+ 
+
+
 }

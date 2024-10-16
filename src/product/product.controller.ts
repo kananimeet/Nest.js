@@ -31,11 +31,13 @@ export class ProductController {
   }
 
 
+
   @Get('all')
   @UseGuards(AuthGuard('jwt'))
   async findAll(): Promise<Product[]> {
       return this.productService.findAll();
   }
+
 
 
   @Get('search')
@@ -61,6 +63,7 @@ export class ProductController {
   }
 
 
+  
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number) {
@@ -68,30 +71,6 @@ export class ProductController {
       return { message: "Product deleted successfully" };
   }
 
-  private validateProductInput(productName: string, price: number, description: string) {
-    class ProductInput {
-      @IsString()
-      @IsNotEmpty()
-      @MaxLength(50, { message: 'Product name is too long. Max length is 50 characters.' })
-      productName: string;
-
-      @IsNotEmpty()
-      price: number;
-
-      @IsString()
-      @IsNotEmpty()
-      @MaxLength(500, { message: 'Max length is 500 characters.' })
-      description: string;
-    }
-
-    const productInput = new ProductInput();
-    productInput.productName = productName;
-    productInput.price = price;
-    productInput.description = description;
-
-    const errors = validateSync(productInput);
-    return errors.map(error => Object.values(error.constraints || {})).flat();
-  }
 }
 
 

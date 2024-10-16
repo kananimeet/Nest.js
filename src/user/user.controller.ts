@@ -69,7 +69,7 @@ export class UserController {
         return {
           message: 'Login successful',
           welcome: user.firstname,
-          profile: userAccount,
+          // profile: userAccount,
           accessToken: token,
         };
       } else {

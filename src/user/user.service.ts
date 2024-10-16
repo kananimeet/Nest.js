@@ -1,4 +1,4 @@
-import { Injectable, HttpException, forwardRef, Inject } from '@nestjs/common';
+import { Injectable, HttpException, forwardRef, Inject, HttpStatus, } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -6,7 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UseraccountService } from 'src/useraccount/useraccount.service';
 import { UserchatService } from 'src/userchat/userchat.service';
-
+import { Jwt } from 'jsonwebtoken';
 @Injectable()
 export class UserService {
   private tokenBlacklist: string[];
@@ -20,6 +20,7 @@ export class UserService {
   {
     this.tokenBlacklist = [];
   } 
+
 
   async getUserFromToken(token: string): Promise<User> {
     try {
@@ -91,6 +92,7 @@ export class UserService {
   isTokenBlacklisted(token: string): boolean {
     return this.tokenBlacklist.includes(token);
   }
+
 }
 
 

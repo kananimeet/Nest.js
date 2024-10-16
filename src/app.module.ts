@@ -17,6 +17,9 @@ import { UserchatController } from './userchat/userchat.controller';
 import { UserchatlistController } from './userchatlist/userchatlist.controller';
 import { ProductchatlistModule } from './admin/productchatlist/productchatlist.module';
 import { AllproductModule } from './allproduct/allproduct.module';
+import { AddtocartController } from './addtocart/addtocart.controller';
+import { AddtocartService } from './addtocart/addtocart.service';
+import { AddtocartModule } from './addtocart/addtocart.module';
 
 
 @Module({
@@ -43,11 +46,12 @@ import { AllproductModule } from './allproduct/allproduct.module';
     UserproductModule,
     UserchatModule,
     AllproductModule,
+    AddtocartModule,
    
   ],
 
- providers: [UsershowService, UserproductService,],
- controllers: [UseraccountController, UsershowController, UserproductController, UserchatController,UserchatlistController],
+ providers: [UsershowService, UserproductService],
+ controllers: [UseraccountController, UsershowController, UserproductController, UserchatController,UserchatlistController, AddtocartController],
 
 })
 export class AppModule {}

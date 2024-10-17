@@ -24,10 +24,11 @@ export class ProductController {
       @Body('price') price: number,
       @Body('description') description: string,
       @UploadedFiles() files: Express.Multer.File[],
-      @Request() req: any
+      @Request() req: any,
+      @Body('quantity') quantity: number,
   ) {
       const token = req.headers.authorization.split(' ')[1];
-      return this.productService.create(productName, price, description, files, token);
+      return this.productService.create(productName, price, description,files,token,quantity);
   }
 
 
@@ -56,10 +57,11 @@ export class ProductController {
       @Body('price') price?: number,
       @Body('description') description?: string,
       @UploadedFiles() imageFiles?: Express.Multer.File[],
+      @Body('quantity') quantity?: number,
      
   ) {
       const token = req.headers.authorization.split(' ')[1];
-      return this.productService.update(id,token, productName, price, description, imageFiles);
+      return this.productService.update(id,token, productName, price, description, imageFiles,quantity);
   }
 
 

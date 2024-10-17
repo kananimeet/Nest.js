@@ -5,42 +5,49 @@ import { Product } from './product.entity';
 import { promises as fs } from 'fs';
 import { Like } from 'typeorm';
 import { UseraccountService } from 'src/useraccount/useraccount.service'; 
-import { UserchatService } from 'src/userchat/userchat.service';
-import { UserService } from 'src/user/user.service';
-
 
 @Injectable()
 export class ProductService {
     constructor(
         @InjectRepository(Product) private readonly addProduct: Repository<Product>,
         private readonly userAccountService: UseraccountService,
-         
-       ) {}
-        async create(
+        ) {}
+
+       async create(
         productName: string,
         price: number,
         description: string,
         imageFiles: Express.Multer.File[],
-        userToken: string 
-    ): Promise<Product> {
+        userToken: string,
+        quantity: number 
+    ): Promise<{ message: string }> {
         try {
             const userProfile = await this.userAccountService.getUserFromToken(userToken);
             const userAddress = userProfile.address;
             const imageUpload = userProfile.imageUpload;
             const imagePaths = await this.handleFileUpload(imageFiles);
+    
             const product = this.addProduct.create({ 
                 productName, 
                 price, 
                 description, 
                 imagePaths,
                 address: userAddress, 
-                imageUpload 
+                imageUpload,
+                quantity 
             });
-            return this.addProduct.save(product);
+            
+            await this.addProduct.save(product);
+    
+            return {
+                message: "Product added successfully"
+            };
         } catch (error) {
             throw new HttpException("Not Saved", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+
 
     private validateImageUpload(files: Express.Multer.File[]): void {   
         const requiredImages = 6;
@@ -89,36 +96,41 @@ export class ProductService {
         price?: number,
         description?: string,
         imageFiles?: Express.Multer.File[],
-    ): Promise<Product> {
+        quantity?: number
+    ): Promise<{ message: string }> {
         const product = await this.addProduct.findOne({ where: { id } });
-
+    
         if (!product) {
             throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
         }
-
-        
+    
         const userProfile = await this.userAccountService.getUserFromToken(userToken);
         product.address = userProfile.address;
-        product.imageUpload = userProfile.imageUpload; 
-
+        product.imageUpload = userProfile.imageUpload;
+    
         if (productName) product.productName = productName;
         if (price !== undefined) product.price = price;
         if (description) product.description = description;
-
+        if (quantity !== undefined) product.quantity = quantity;
+    
         if (imageFiles && imageFiles.length > 0) {
             this.validateImageUpload(imageFiles);
             const newImagePaths = await this.handleFileUpload(imageFiles);
             product.imagePaths = newImagePaths;
         }
-
+    
         try {
-            return this.addProduct.save(product);
+            await this.addProduct.save(product);
+            return {
+                message: "Product updated successfully"
+            };
         } catch (error) {
             throw new HttpException("Product not updated", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     
+    
+
     async deleteById(id:number):Promise<Product> {
         try {
             await this.addProduct.delete(id);
@@ -127,7 +139,6 @@ export class ProductService {
             throw new HttpException("Not Delete Product", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
     async findAllByUser(userToken: string): Promise<Product[]> {
@@ -156,7 +167,6 @@ export class ProductService {
     }    
     
     
-    
     async findById(id: number): Promise<Product> {
         const product = await this.addProduct.findOne({ where: { id } });
     
@@ -167,7 +177,19 @@ export class ProductService {
     }
     
 
- 
+
+
+
+    async updateProductQuantity(productId: number, quantity: number): Promise<void> {
+        const product = await this.addProduct.findOne({ where: { id: productId } });
+
+        if (!product) {
+            throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
+        }
+
+        product.quantity = quantity; 
+        await this.addProduct.save(product);
+    }
 
 
 }

@@ -20,7 +20,7 @@ export class AdminService {
   async findByEmail(email: string): Promise<Admin | undefined> {
     return this.adminRegister.findOne({ where: { email } });
   }
-
+  
   async create(adminname: string, email: string, password: string): Promise<Admin> {
     const hashedPassword = await bcrypt.hash(password, 10);
     const admin = this.adminRegister.create({ adminname, email, password: hashedPassword });

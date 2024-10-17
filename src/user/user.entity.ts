@@ -1,11 +1,7 @@
-import { IsEmail, isEmail, IsNotEmpty, IsString,Length } from "class-validator";
 import { PrimaryGeneratedColumn, Column, Entity, OneToMany, } from "typeorm";
-import { Product } from "src/product/product.entity";
-import { Addtocart } from "src/addtocart/addtocart.entity";
 
 @Entity()
 export class User {
-   
    
     @PrimaryGeneratedColumn()
     id: number;
@@ -33,7 +29,6 @@ export class User {
   
     @Column({ nullable: true })
     address: string;    
-
-  
+ 
 }
 

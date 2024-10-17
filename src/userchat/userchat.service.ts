@@ -21,28 +21,6 @@ export class UserchatService {
   }
 
 
-  // async getProductDetails(productName: string, message: string): Promise<{productName: string; productImage: string[]; message: string; }> {
-  //   const products = await this.productService.findByName(productName);
-
-  //   if (!products || products.length === 0) {
-  //     throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
-  //   }
-
-  //   const product = products[0];
-  //   const productDetails = {
-  //     productName: product.productName,
-  //     productImage: product.imagePaths,
-  //     message: message,
-  //   };
-
-  //   await this.userchatListService.saveProductDetails(productDetails);
-  //   return productDetails;
-  // }
-
-
-
-
-
   async getProductDetails(token: string, productName: string, message: string): Promise<{
     productName: string;
     productImage: string[];

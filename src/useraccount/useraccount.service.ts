@@ -27,11 +27,9 @@ async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
   }
 
 
-
   async findByEmail(email: string): Promise<{ profile: Partial<User> }> {
     const userAccount = await this.userAccount.findOne({ where: { email } });
     
-
     if (!userAccount) {
       return null; 
     }
@@ -48,7 +46,7 @@ async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
     };
   }
 
-  
+
   async getUserFromToken(token: string): Promise<Partial<User>> {
     try {
       const decoded = this.jwtService.verify(token);

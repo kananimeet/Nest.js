@@ -26,6 +26,7 @@ import { UserordershowController } from './admin/userordershow/userordershow.con
 import { UserordershowModule } from './admin/userordershow/userordershow.module';
 
 
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -53,16 +54,21 @@ import { UserordershowModule } from './admin/userordershow/userordershow.module'
     AddtocartModule,
     ProductorderModule,
     UserordershowModule,
+    
    
   ],
 
  providers: [UsershowService, UserproductService, UserordershowService],
- controllers: [UseraccountController, UsershowController, UserproductController, UserchatController,UserchatlistController, AddtocartController, ProductorderController, UserordershowController],
+ controllers: [
+              UseraccountController,
+              UsershowController,
+              UserproductController,
+              UserchatController,
+              UserchatlistController, 
+              AddtocartController,
+              ProductorderController,
+              UserordershowController
+            ],
 
 })
 export class AppModule {}
-
-
-
-
-

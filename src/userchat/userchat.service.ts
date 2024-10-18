@@ -28,10 +28,10 @@ export class UserchatService {
     firstname: string;
     imageUpload: string;
     address: string;
+  
   }> {
-    // Retrieve user info based on the token
+    
     const userInfo = await this.getUserInfo(token);
-
     const products = await this.productService.findByName(productName);
     
     if (!products || products.length === 0) {
@@ -46,12 +46,19 @@ export class UserchatService {
       firstname: userInfo.firstname,
       imageUpload: userInfo.imageUpload,
       address: userInfo.address,
+      
     };
 
     await this.userchatListService.saveProductDetails(productDetails);
     return productDetails;
   }
-
-
-
 }
+
+
+
+
+
+
+
+
+

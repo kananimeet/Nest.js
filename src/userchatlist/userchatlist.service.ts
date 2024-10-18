@@ -8,8 +8,8 @@ export class UserchatlistService {
   constructor(
     @InjectRepository(ProductChat)
     private readonly productDetailRepository: Repository<ProductChat>,
+   
   ) {}
-
 
   async saveProductDetails(productDetails: {
     firstname: string;
@@ -18,10 +18,12 @@ export class UserchatlistService {
     productName: string;
     productImage: string[];
     message: string;
+    
+    
   }): Promise<void> {
     const productDetail = this.productDetailRepository.create(productDetails);
     await this.productDetailRepository.save(productDetail);
-    console.log("Product Details Saved:", productDetail);
+    // console.log("Product Details Saved:", productDetail);
   }
 
   
@@ -29,7 +31,4 @@ export class UserchatlistService {
     const productDetails = await this.productDetailRepository.find();
     return productDetails;
   }
-
-
-
 }

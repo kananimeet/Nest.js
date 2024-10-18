@@ -1,12 +1,11 @@
-import { Injectable, HttpException, forwardRef, Inject, HttpStatus, } from '@nestjs/common';
+import { Injectable, HttpException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { UseraccountService } from 'src/useraccount/useraccount.service';
-import { UserchatService } from 'src/userchat/userchat.service';
-import { Jwt } from 'jsonwebtoken';
+
 @Injectable()
 export class UserService {
   private tokenBlacklist: string[];

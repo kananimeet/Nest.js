@@ -58,7 +58,6 @@ export class UserController {
         const userAccount = await this.userAccountService.findByEmail(user.email);
         const token = await this.userService.generateJwt(user);
 
-  
         await this.userAccountService.createOrUpdateUserAccount({
           firstname: user.firstname,
           lastname: user.lastname,

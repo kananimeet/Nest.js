@@ -5,12 +5,14 @@ import { Addtocart } from './addtocart.entity';
 import { ProductService } from 'src/product/product.service';
 import { UserService } from 'src/user/user.service';
 
+
 @Injectable()
 export class AddtocartService {
     constructor(
         @InjectRepository(Addtocart) private readonly cartItemRepository: Repository<Addtocart>,
         private readonly productService: ProductService,
         private readonly userService: UserService,
+        
     ) {}
 
     async addToCart(productId: number, userToken: string): Promise<string> {
@@ -52,5 +54,24 @@ export class AddtocartService {
             throw new HttpException("Could not retrieve cart items", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+    async deleteCartItem(cartItemId: number, userToken: string): Promise<string> {
+        try {
+            const user = await this.userService.getUserFromToken(userToken);
+            const cartItem = await this.cartItemRepository.findOne({ where: { id: cartItemId, userId: user.id } });
+
+            if (!cartItem) {
+                throw new HttpException("Cart item not found", HttpStatus.NOT_FOUND);
+            }
+
+            await this.cartItemRepository.delete(cartItemId);
+            return "Cart item successfully deleted.";
+        } catch (error) {
+            throw new HttpException("Could not delete cart item", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
 

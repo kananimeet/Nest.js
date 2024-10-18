@@ -13,5 +13,6 @@ import { AdminModule } from 'src/admin/admin.module';
   ],
   controllers: [ProductchatlistController],
   providers: [ProductchatlistService, UserchatlistService,],
+  
 })
 export class ProductchatlistModule {}

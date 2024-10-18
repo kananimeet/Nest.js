@@ -55,6 +55,10 @@ export class Product {
     @Column()
     imageUpload: string;
 
+    
+    @Column()
+    firstname: string; 
+
     @Column('int')
     quantity: number; 
 }

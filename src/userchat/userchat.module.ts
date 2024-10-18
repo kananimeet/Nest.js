@@ -15,6 +15,7 @@ import { ProductChat } from './userchat.entity';
     UserModule, 
     ProductModule, 
     UserchatlistModule, 
+   
   ],
   providers: [UserchatService,UserchatlistService],
   controllers: [UserchatController],

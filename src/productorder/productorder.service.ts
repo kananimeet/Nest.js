@@ -98,7 +98,6 @@ export class ProductorderService {
 //fetch admin side order data
     async getUserOrder(): Promise<Order[]> {
         try {
-            // Fetch all orders since this is accessed by admin
             const userOrders = await this.orderRepository.find();
             return userOrders;
         } catch (error) {

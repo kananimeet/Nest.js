@@ -7,7 +7,6 @@ import { ProductService } from 'src/product/product.service';
 import { Product } from 'src/product/product.entity';
 import { UseraccountModule } from 'src/useraccount/useraccount.module';
 import { UserModule } from 'src/user/user.module';
-import { UserService } from 'src/user/user.service';
 
 @Module({
     imports: [

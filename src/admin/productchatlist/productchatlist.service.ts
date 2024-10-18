@@ -20,7 +20,7 @@ export class ProductchatlistService {
       throw new UnauthorizedException('Invalid token');
     }
     return this.userchatlistService.getAllProductDetails(); 
-  }
+  } 
 
 
   async replyToProductChat(token: string, chatId: number, replay: string): Promise<ProductChat> {
@@ -39,8 +39,6 @@ export class ProductchatlistService {
   }
 
 
-
-
   async deleteProductChat(token: string, chatId: number): Promise<void> {
     const isValidToken = await this.adminService.validateToken(token);
     if (!isValidToken) {
@@ -54,9 +52,4 @@ export class ProductchatlistService {
 
     await this.productChatRepository.remove(productChat);
   }
-
-
-
-
 }
-

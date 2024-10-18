@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Inject, forwardRef, UnsupportedMediaTypeException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
@@ -26,15 +26,19 @@ export class ProductService {
             const userAddress = userProfile.address;
             const imageUpload = userProfile.imageUpload;
             const imagePaths = await this.handleFileUpload(imageFiles);
+            const firstname = userProfile.firstname;
     
             const product = this.addProduct.create({ 
+                
                 productName, 
                 price, 
                 description, 
                 imagePaths,
                 address: userAddress, 
                 imageUpload,
-                quantity 
+                quantity,
+                firstname
+               
             });
             
             await this.addProduct.save(product);
@@ -176,8 +180,6 @@ export class ProductService {
      return product;
     }
     
-
-
 
 
     async updateProductQuantity(productId: number, quantity: number): Promise<void> {

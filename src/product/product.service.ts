@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, Inject, forwardRef, UnsupportedMediaTypeException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Inject, forwardRef, UnsupportedMediaTypeException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
@@ -42,7 +42,6 @@ export class ProductService {
             });
             
             await this.addProduct.save(product);
-    
             return {
                 message: "Product added successfully"
             };
@@ -51,8 +50,6 @@ export class ProductService {
         }
     }
     
-
-
     private validateImageUpload(files: Express.Multer.File[]): void {   
         const requiredImages = 6;
         const maxSizeInBytes = 10 * 1024 * 1024; 
@@ -96,14 +93,13 @@ export class ProductService {
     async update(
         id: number,
         userToken: string,
-        productName?: string,
-        price?: number,
-        description?: string,
-        imageFiles?: Express.Multer.File[],
-        quantity?: number
+        updateData: any,
+        imageFiles?: Express.Multer.File[]
     ): Promise<{ message: string }> {
+        if (!userToken) {
+            throw new UnauthorizedException("User token is required");
+        }
         const product = await this.addProduct.findOne({ where: { id } });
-    
         if (!product) {
             throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
         }
@@ -112,11 +108,10 @@ export class ProductService {
         product.address = userProfile.address;
         product.imageUpload = userProfile.imageUpload;
     
-        if (productName) product.productName = productName;
-        if (price !== undefined) product.price = price;
-        if (description) product.description = description;
-        if (quantity !== undefined) product.quantity = quantity;
+        // Update product details from updateData
+        Object.assign(product, updateData);
     
+        // Handle image uploads if provided
         if (imageFiles && imageFiles.length > 0) {
             this.validateImageUpload(imageFiles);
             const newImagePaths = await this.handleFileUpload(imageFiles);
@@ -125,16 +120,13 @@ export class ProductService {
     
         try {
             await this.addProduct.save(product);
-            return {
-                message: "Product updated successfully"
-            };
+            return { message: "Product updated successfully" };
         } catch (error) {
+            console.error('Error during product update:', error);
             throw new HttpException("Product not updated", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     
-    
-
     async deleteById(id:number):Promise<Product> {
         try {
             await this.addProduct.delete(id);
@@ -145,18 +137,16 @@ export class ProductService {
     }
 
 
+
     async findAllByUser(userToken: string): Promise<Product[]> {
         try {
             const userProfile = await this.userAccountService.getUserFromToken(userToken);
             const products = await this.addProduct.find({
                 where: { address: userProfile.address },
             });
-
-            if (products.length === 0) {
-                throw new HttpException("No products found for this user", HttpStatus.NOT_FOUND);
-            }
             return products;
         } catch (error) {
+            console.error('Error fetching user products:', error);
             throw new HttpException("An error occurred while fetching user's products", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -192,6 +182,4 @@ export class ProductService {
         product.quantity = quantity; 
         await this.addProduct.save(product);
     }
-
-
 }

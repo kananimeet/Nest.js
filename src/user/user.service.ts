@@ -1,4 +1,4 @@
-import { Injectable, HttpException} from '@nestjs/common';
+import { Injectable, HttpException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -19,8 +19,6 @@ export class UserService {
   {
     this.tokenBlacklist = [];
   } 
-
-
   async getUserFromToken(token: string): Promise<User> {
     try {
       const decoded = this.jwtService.verify(token); 
@@ -30,6 +28,7 @@ export class UserService {
       }
       return user;
     } catch (error) {
+      console.error('Token validation error:', error);
       throw new HttpException('Invalid token', 401);
     }
   }
@@ -67,6 +66,7 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return this.userRegister.find(); 
   }
+
   
   async deleteById(id: number): Promise<void> {
     await this.userRegister.delete(id);
@@ -91,9 +91,4 @@ export class UserService {
   isTokenBlacklisted(token: string): boolean {
     return this.tokenBlacklist.includes(token);
   }
-
 }
-
-
-
-

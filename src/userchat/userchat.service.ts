@@ -28,8 +28,7 @@ export class UserchatService {
     firstname: string;
     imageUpload: string;
     address: string;
-  
-  }> {
+   }> {
     
     const userInfo = await this.getUserInfo(token);
     const products = await this.productService.findByName(productName);
@@ -53,12 +52,3 @@ export class UserchatService {
     return productDetails;
   }
 }
-
-
-
-
-
-
-
-
-

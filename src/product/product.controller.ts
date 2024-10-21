@@ -1,12 +1,9 @@
-import { Controller, Post, Put, Body, Param,Request, UseGuards, UseInterceptors, UploadedFiles, Query, Get, Delete, HttpException, HttpStatus,Headers, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Put, Body, Param, Request, UseGuards, UseInterceptors, UploadedFiles, Query, Get, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'; 
 import { ProductService } from './product.service';
 import { UseraccountService } from 'src/useraccount/useraccount.service';
 import { Product } from './product.entity';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { IsNotEmpty, IsString, MaxLength, validateSync } from 'class-validator';
-import { AuthGuard } from '@nestjs/passport';
-
 
 @Controller('products')
 export class ProductController {
@@ -14,7 +11,6 @@ export class ProductController {
     private readonly productService: ProductService,
     private readonly userAccountService: UseraccountService,
   ) {}
-
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -28,23 +24,32 @@ export class ProductController {
       @Body('quantity') quantity: number,
   ) {
       const token = req.headers.authorization.split(' ')[1];
-      return this.productService.create(productName, price, description,files,token,quantity);
+      return this.productService.create(productName, price, description, files, token, quantity);
   }
 
-
-
   @Get('all')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   async findAll(): Promise<Product[]> {
       return this.productService.findAll();
   }
-
-
 
   @Get('search')
   @UseGuards(JwtAuthGuard)
   async search(@Query('productName') name: string): Promise<Product[]> {
       return this.productService.findByName(name);
+  }
+
+  @Get('user-products')
+  @UseGuards(JwtAuthGuard)
+  async findAllByUser(@Request() req: any): Promise<{ message: string; products?: Product[] }> {
+      const token = req.headers.authorization.split(' ')[1];
+      const products = await this.productService.findAllByUser(token);
+
+      if (products.length === 0) {
+          return { message: "No products found for this user" };
+      }
+
+      return { message: "Products retrieved successfully", products };
   }
 
   @Put(':id')
@@ -53,31 +58,17 @@ export class ProductController {
   async updateProduct(
       @Param('id') id: number,
       @Request() req: any, 
-      @Body('productName') productName?: string,
-      @Body('price') price?: number,
-      @Body('description') description?: string,
       @UploadedFiles() imageFiles?: Express.Multer.File[],
-      @Body('quantity') quantity?: number,
-     
   ) {
       const token = req.headers.authorization.split(' ')[1];
-      return this.productService.update(id,token, productName, price, description, imageFiles,quantity);
+      const updateData = req.body;
+      return this.productService.update(id, token, updateData, imageFiles);
   }
 
-
-  
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number) {
       await this.productService.deleteById(id);
       return { message: "Product deleted successfully" };
   }
-
 }
-
-
-
-
-
-
-

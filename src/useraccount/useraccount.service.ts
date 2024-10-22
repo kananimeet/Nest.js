@@ -11,25 +11,22 @@ export class UseraccountService {
     private readonly jwtService: JwtService,
   ) {}
 
-
-async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
+    async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
     const existingUserAccount = await this.userAccount.findOne({
-      where: { email: userAccountData.email },
+    where: { email: userAccountData.email },
     });
     
     if (!existingUserAccount) {
-      const newUserAccount = this.userAccount.create(userAccountData);
-      return this.userAccount.save(newUserAccount);
+    const newUserAccount = this.userAccount.create(userAccountData);
+    return this.userAccount.save(newUserAccount);
     }
   
     Object.assign(existingUserAccount, userAccountData);
     return this.userAccount.save(existingUserAccount);
   }
 
-
   async findByEmail(email: string): Promise<{ profile: Partial<User> }> {
     const userAccount = await this.userAccount.findOne({ where: { email } });
-    
     if (!userAccount) {
       return null; 
     }
@@ -45,8 +42,6 @@ async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
       },
     };
   }
-
-
   async getUserFromToken(token: string): Promise<Partial<User>> {
     try {
       const decoded = this.jwtService.verify(token);
@@ -63,7 +58,6 @@ async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
     }
   }
 
-
   async updateUserAccount(email: string, userAccountData: Partial<User>): Promise<User> {
     const existingUserAccount = await this.userAccount.findOne({ where: { email } });
 
@@ -75,8 +69,6 @@ async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
     return this.userAccount.save(existingUserAccount);
 }
 
-
-
   async verifyToken(token: string): Promise<any> {
     try {
       return this.jwtService.verify(token);
@@ -84,7 +76,6 @@ async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
       throw new UnauthorizedException('Invalid token');
     }
 }
-
 
   async deleteUserAccount(token: string): Promise<void> {
     const userProfile = await this.getUserFromToken(token);

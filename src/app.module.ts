@@ -54,8 +54,6 @@ import { UserordershowModule } from './admin/userordershow/userordershow.module'
     AddtocartModule,
     ProductorderModule,
     UserordershowModule,
-    
-   
   ],
 
  providers: [UsershowService, UserproductService, UserordershowService],

@@ -1,4 +1,4 @@
-import { Injectable, HttpException, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import { Injectable, HttpException, NotFoundException, UnauthorizedException, HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -19,20 +19,23 @@ export class UserService {
   {
     this.tokenBlacklist = [];
   } 
+
+
   async getUserFromToken(token: string): Promise<User> {
     try {
-      const decoded = this.jwtService.verify(token); 
-      const user = await this.findByEmail(decoded.email); 
-      if (!user) {
-        throw new HttpException('User not found', 404);
-      }
-      return user;
+        const decoded = this.jwtService.verify(token);
+        const user = await this.findByEmail(decoded.email); 
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        }
+        return user;
     } catch (error) {
-      console.error('Token validation error:', error);
-      throw new HttpException('Invalid token', 401);
+        if (error.name === 'TokenExpiredError') {
+            throw new HttpException('Token has expired', HttpStatus.UNAUTHORIZED);
+        }
+        throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
-  }
-
+}
 
   async create(
     firstname: string,

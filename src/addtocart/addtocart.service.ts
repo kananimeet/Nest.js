@@ -5,17 +5,15 @@ import { Addtocart } from './addtocart.entity';
 import { ProductService } from 'src/product/product.service';
 import { UserService } from 'src/user/user.service';
 
-
 @Injectable()
 export class AddtocartService {
     constructor(
         @InjectRepository(Addtocart) private readonly cartItemRepository: Repository<Addtocart>,
         private readonly productService: ProductService,
         private readonly userService: UserService,
-        
     ) {}
 
-    async addToCart(productId: number, userToken: string): Promise<string> {
+    async addToCart(productId: number, userToken: string): Promise<void> {
         try {
             const product = await this.productService.findById(productId);
             const user = await this.userService.getUserFromToken(userToken); 
@@ -33,7 +31,6 @@ export class AddtocartService {
             });
 
             await this.cartItemRepository.save(cartItem);
-            return "Product successfully added to cart.";
         } catch (error) {
             throw new HttpException("Could not add product to cart", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -43,7 +40,7 @@ export class AddtocartService {
         try {
             const user = await this.userService.getUserFromToken(userToken);
 
-            const cartItems = await this.cartItemRepository.find({ where: { userId: user.id } });
+            const cartItems = await this.cartItemRepository.find({ where: { userId: user.id }});
 
             if (!cartItems.length) {
                 throw new HttpException("No items found in cart", HttpStatus.NOT_FOUND);
@@ -55,9 +52,7 @@ export class AddtocartService {
         }
     }
 
-
-
-    async deleteCartItem(cartItemId: number, userToken: string): Promise<string> {
+    async deleteCartItem(cartItemId: number, userToken: string): Promise<void> {
         try {
             const user = await this.userService.getUserFromToken(userToken);
             const cartItem = await this.cartItemRepository.findOne({ where: { id: cartItemId, userId: user.id } });
@@ -67,10 +62,8 @@ export class AddtocartService {
             }
 
             await this.cartItemRepository.delete(cartItemId);
-            return "Cart item successfully deleted.";
         } catch (error) {
             throw new HttpException("Could not delete cart item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

@@ -45,7 +45,6 @@ export class UserchatService {
       firstname: userInfo.firstname,
       imageUpload: userInfo.imageUpload,
       address: userInfo.address,
-      
     };
 
     await this.userchatListService.saveProductDetails(productDetails);

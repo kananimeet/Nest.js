@@ -26,7 +26,7 @@ export class ProductController {
       const token = req.headers.authorization.split(' ')[1];
       return this.productService.create(productName, price, description, files, token, quantity);
   }
-
+ 
   @Get('all')
   @UseGuards(JwtAuthGuard)
   async findAll(): Promise<Product[]> {
@@ -52,18 +52,23 @@ export class ProductController {
       return { message: "Products retrieved successfully", products };
   }
 
-  @Put(':id')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('images', 6))
-  async updateProduct(
-      @Param('id') id: number,
-      @Request() req: any, 
-      @UploadedFiles() imageFiles?: Express.Multer.File[],
-  ) {
-      const token = req.headers.authorization.split(' ')[1];
-      const updateData = req.body;
-      return this.productService.update(id, token, updateData, imageFiles);
-  }
+
+@Put(':id')
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(FilesInterceptor('images', 6))
+async updateProduct(
+    @Param('id') id: number,
+    @Request() req: any, 
+    @UploadedFiles() imageFiles?: Express.Multer.File[]
+) {
+    const token = req.headers.authorization.split(' ')[1];
+    const updateData = req.body;
+    await this.productService.update(id, token, updateData, imageFiles);
+    return { message: "Product updated successfully" };
+}
+
+
+
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)

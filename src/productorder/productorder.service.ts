@@ -76,13 +76,14 @@ export class ProductorderService {
         }
     }
 
-  
+   
     async getUserOrders(userToken: string): Promise<Order[]> {
         try {
             const userProfile = await this.userAccountService.getUserFromToken(userToken);
             if (!userProfile) {
-                throw new HttpException("Invalid user token",404);
+                throw new HttpException("Invalid user token", HttpStatus.UNAUTHORIZED);
             }
+
             const userOrders = await this.orderRepository.find({
                 where: { email: userProfile.email },
             });
@@ -93,9 +94,7 @@ export class ProductorderService {
         }
     }
 
-
-
-//fetch admin side order data
+     // fetch admin side order data
     async getUserOrder(): Promise<Order[]> {
         try {
             const userOrders = await this.orderRepository.find();
@@ -105,7 +104,6 @@ export class ProductorderService {
             throw new HttpException("Could not retrieve user orders", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
 
     async deleteOrderById(orderId: number): Promise<void> {
         const result = await this.orderRepository.delete(orderId);
@@ -113,11 +111,4 @@ export class ProductorderService {
             throw new HttpException("Order not found", HttpStatus.NOT_FOUND);
         }
     }
-
-
-
-    
-
-
-
 }

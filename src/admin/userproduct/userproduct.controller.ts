@@ -3,7 +3,7 @@ import { Product } from 'src/product/product.entity';
 import { UserproductService } from './userproduct.service';
 import { ProductService } from 'src/product/product.service';
 import { AdminService } from 'src/admin/admin.service';
-import { AllproductService } from 'src/allproduct/allproduct.service';
+
 
 @Controller('userproduct')
 export class UserproductController {
@@ -11,7 +11,6 @@ export class UserproductController {
     private readonly userProductService: UserproductService,
     private readonly productService: ProductService,
     private readonly adminService: AdminService,
-    private readonly allProductService: AllproductService,
   ) {}
 
   @Get('products')
@@ -24,12 +23,6 @@ export class UserproductController {
     return this.productService.findAll();
   }
 
-
-  @Get('all-products') 
-  async getAllProducts(): Promise<Pick<Product, 'productName' | 'address' | 'price' | 'imagePaths'>[]> {
-    return this.allProductService.getAllProducts(); 
-  }
-  
 
   @Delete(':id')
   async deleteProduct(

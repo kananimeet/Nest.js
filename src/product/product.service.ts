@@ -12,7 +12,6 @@ export class ProductService {
         @InjectRepository(Product) private readonly addProduct: Repository<Product>,
         private readonly userAccountService: UseraccountService,
         ) {}
-
        async create(
         productName: string,
         price: number,
@@ -31,22 +30,20 @@ export class ProductService {
                 productName, 
                 price, 
                 description, 
-                imagePaths,
+                imagePaths,  
                 address: userAddress, 
                 imageUpload,
                 quantity,
-                firstname
-                
-            });
+                // firstname
+             });
             await this.addProduct.save(product);
             return {
                 message: "Product added successfully"
             };
         } catch (error) {
-            throw new HttpException("Not Saved", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("Not Saved",500);
         }
     }
-
 
     private validateImageUpload(files: Express.Multer.File[]): void {   
         const requiredImages = 6;
@@ -55,9 +52,7 @@ export class ProductService {
         if (files.length !== requiredImages) {
             throw new HttpException("You must upload exactly 6 images", HttpStatus.BAD_REQUEST);
         }
-
     }
-
 
     private async handleFileUpload(files: Express.Multer.File[]): Promise<string[]> { 
         const uploadPath = 'uploads/products/';
@@ -74,7 +69,6 @@ export class ProductService {
       return filePaths; 
     }
     
-
     async findByName(productName: string): Promise<Product[]> {
         try {
             const products = await this.addProduct.find({
@@ -85,7 +79,7 @@ export class ProductService {
             }
             return products;
         } catch (error) {
-            throw new HttpException("An error occurred while searching for products", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("An error occurred while searching for products",500);
         }
     }
 
@@ -120,7 +114,7 @@ export class ProductService {
             await this.addProduct.save(product);
          }  catch (error) {
             console.error('Error during product update:', error);
-            throw new HttpException("Product not updated", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("Product not updated",500);
         }
     }
 
@@ -130,7 +124,7 @@ export class ProductService {
             await this.addProduct.delete(id);
             return null;
            }catch (error) {
-            throw new HttpException("Not Delete Product", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("Not Delete Product",500);
         }
     }
 
@@ -143,15 +137,33 @@ export class ProductService {
             return products;
         }   catch (error) {
             console.error('Error fetching user products:', error);
-            throw new HttpException("An error occurred while fetching user's products", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("An error occurred while fetching user's products", 500);
         }
     }
 
 
     //Admin side fetched product
-    async findAll():Promise<Product[]> {
-        return this.addProduct.find();
-    }
+    // async findAll():Promise<Product[]> {
+    //     return this.addProduct.find();
+    // }
+
+
+    async findAll(): Promise<any[]> {
+        const products = await this.addProduct.find();
+        const productsWithFirstname = await Promise.all(
+            products.map(async (product) => {
+                const userProfile = await this.userAccountService.getUserByAddress(product.address); // Adjust accordingly
+                return {
+                    product,
+                    firstname: userProfile?.firstname || null,
+                };
+            })
+        );
+     return productsWithFirstname;
+     }
+    
+    
+
 
     async Delete(id: number): Promise<void> {
         await this.addProduct.delete(id);
@@ -167,14 +179,25 @@ export class ProductService {
      return product;
     }
     
-
-    async updateProductQuantity(productId: number, quantity: number): Promise<void> {
+        async updateProductQuantity(productId: number, quantity: number): Promise<void> {
         const product = await this.addProduct.findOne({ where: { id: productId } });
 
         if (!product) {
-            throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
+            throw new HttpException("Product not found",400);
         }
-        product.quantity = quantity; 
+        product.quantity = quantity;
         await this.addProduct.save(product);
     }
+
+
+    async getAllProducts(): Promise<Pick<Product, 'productName' |'address'| 'price' | 'imagePaths'>[]> {
+        const products = await this.findAll(); 
+        return products.map(({ productName,address, price, imagePaths }) => ({
+          productName,
+          address,
+          price,
+          imagePaths: imagePaths.length > 0 ? [imagePaths[0]] : [], 
+        }));
+      }
+
 }

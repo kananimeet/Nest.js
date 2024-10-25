@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpException, Delete, Param, Req, UseGuards, Res,} from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpException, Delete, Param, Req, Res,} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UseraccountService } from 'src/useraccount/useraccount.service';
 import { User } from './user.entity';
@@ -30,13 +30,8 @@ export class UserController {
           body.address
         );
 
-        await this.userAccountService.createOrUpdateUserAccount({
-          firstname: body.firstname,
-          lastname: body.lastname,
-          nickname: body.nickname,
+        await this.userAccountService.UserAccount({
           email: body.email,
-          imageUpload: body.imageUpload,
-          address: body.address
         });
 
         return newUser;
@@ -48,8 +43,6 @@ export class UserController {
     }
   }
 
-
-
   @Post('login')
   async login(@Body() body: AuthDtos) {
     const user = await this.userService.findByEmail(body.email);
@@ -58,7 +51,7 @@ export class UserController {
         const userAccount = await this.userAccountService.findByEmail(user.email);
         const token = await this.userService.generateJwt(user);
 
-        await this.userAccountService.createOrUpdateUserAccount({
+        await this.userAccountService.UserAccount({
           firstname: user.firstname,
           lastname: user.lastname,
           nickname: user.nickname,

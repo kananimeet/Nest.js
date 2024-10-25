@@ -16,7 +16,7 @@ import { UserproductController } from './admin/userproduct/userproduct.controlle
 import { UserchatController } from './userchat/userchat.controller';
 import { UserchatlistController } from './userchatlist/userchatlist.controller';
 import { ProductchatlistModule } from './admin/productchatlist/productchatlist.module';
-import { AllproductModule } from './allproduct/allproduct.module';
+
 import { AddtocartController } from './addtocart/addtocart.controller';
 import { AddtocartModule } from './addtocart/addtocart.module';
 import { ProductorderController } from './productorder/productorder.controller';
@@ -24,8 +24,8 @@ import { ProductorderModule } from './productorder/productorder.module';
 import { UserordershowService } from './admin/userordershow/userordershow.service';
 import { UserordershowController } from './admin/userordershow/userordershow.controller';
 import { UserordershowModule } from './admin/userordershow/userordershow.module';
-
-
+import { ProductService } from './product/product.service';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [
@@ -50,10 +50,10 @@ import { UserordershowModule } from './admin/userordershow/userordershow.module'
     UsershowModule,
     UserproductModule,
     UserchatModule,
-    AllproductModule,
     AddtocartModule,
     ProductorderModule,
     UserordershowModule,
+    
   ],
 
  providers: [UsershowService, UserproductService, UserordershowService],
@@ -65,7 +65,7 @@ import { UserordershowModule } from './admin/userordershow/userordershow.module'
               UserchatlistController, 
               AddtocartController,
               ProductorderController,
-              UserordershowController
+              UserordershowController,
             ],
 
 })

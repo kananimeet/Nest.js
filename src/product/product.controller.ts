@@ -68,12 +68,22 @@ async updateProduct(
 }
 
 
-
-
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async delete(@Param('id') id: number) {
       await this.productService.deleteById(id);
       return { message: "Product deleted successfully" };
   }
+
+// without for userlogin
+  @Get('all-products')
+  async getAllProducts() {
+    try {
+      const products = await this.productService.getAllProducts();
+      return products;
+    } catch (error) {
+      throw new HttpException('Error fetching products', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 }

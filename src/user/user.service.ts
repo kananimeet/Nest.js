@@ -1,4 +1,4 @@
-import { Injectable, HttpException, NotFoundException, UnauthorizedException, HttpStatus} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -55,7 +55,6 @@ export class UserService {
       nickname,
       email,
       password: hashedPassword,
-      confirmpassword: hashedPassword,
       imageUpload,
       address
       
@@ -75,7 +74,7 @@ export class UserService {
     await this.userRegister.delete(id);
   }
 
-  async generateJwt(user: User): Promise<string> {
+  async generateJwt(user: User): Promise<string> {  
     const payload = {
       email: user.email,
       firstname: user.firstname,

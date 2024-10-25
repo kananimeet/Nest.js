@@ -21,9 +21,6 @@ export class User {
     @Column({ length: 100 })
     password: string;
 
-    @Column({ length: 100 })
-    confirmpassword: string;
-  
     @Column({ nullable: true })
     imageUpload: string;
   

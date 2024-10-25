@@ -72,7 +72,7 @@ export class ProductorderService {
             };
         } catch (error) {
             console.error('Error fetching product details:', error);
-            throw new HttpException("Product details could not be retrieved", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("Product details could not be retrieved", 500);
         }
     }
 
@@ -90,7 +90,7 @@ export class ProductorderService {
             return userOrders;
         } catch (error) {
             console.error('Error fetching user orders:', error);
-            throw new HttpException("Could not retrieve user orders", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("Could not retrieve user orders", 500);
         }
     }
 
@@ -101,7 +101,7 @@ export class ProductorderService {
             return userOrders;
         } catch (error) {
             console.error('Error fetching user orders:', error);
-            throw new HttpException("Could not retrieve user orders", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException("Could not retrieve user orders", 500);
         }
     }
 

@@ -21,13 +21,12 @@ export class AddtocartService {
             if (!product) {
                 throw new HttpException("Product not found", HttpStatus.NOT_FOUND);
             }
-
-            const cartItem = this.cartItemRepository.create({
+                const cartItem = this.cartItemRepository.create({
                 productId: product.id,
                 productName: product.productName,
                 price: product.price,
                 imagePaths: product.imagePaths,
-                userId: user.id 
+                userId: user.id
             });
 
             await this.cartItemRepository.save(cartItem);
@@ -47,7 +46,7 @@ export class AddtocartService {
             }
 
             return cartItems;
-        } catch (error) {
+           }catch (error) {
             throw new HttpException("Could not retrieve cart items", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -60,9 +59,8 @@ export class AddtocartService {
             if (!cartItem) {
                 throw new HttpException("Cart item not found", HttpStatus.NOT_FOUND);
             }
-
             await this.cartItemRepository.delete(cartItemId);
-        } catch (error) {
+           }catch (error) {
             throw new HttpException("Could not delete cart item", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

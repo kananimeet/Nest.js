@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';  
@@ -11,7 +11,7 @@ export class UseraccountService {
     private readonly jwtService: JwtService,
   ) {}
 
-    async createOrUpdateUserAccount(userAccountData: Partial<User>): Promise<User> {
+    async UserAccount(userAccountData: Partial<User>): Promise<User> {
     const existingUserAccount = await this.userAccount.findOne({
     where: { email: userAccountData.email },
     });
@@ -89,5 +89,10 @@ export class UseraccountService {
 
     await this.userAccount.remove(existingUserAccount);
   }
+
+
+  async getUserByAddress(address: string): Promise<User | undefined> {
+    return this.userAccount.findOne({ where: { address } });
+}
 
 }

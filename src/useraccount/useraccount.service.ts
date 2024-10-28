@@ -1,4 +1,4 @@
-import {HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/user.entity';  
@@ -51,7 +51,7 @@ export class UseraccountService {
       if (!userAccount) {
         throw new NotFoundException('User account not found');
       }
-
+ 
       return userAccount.profile;
     } catch (error) {
       throw new Error('Invalid token');
@@ -89,10 +89,5 @@ export class UseraccountService {
 
     await this.userAccount.remove(existingUserAccount);
   }
-
-
-  async getUserByAddress(address: string): Promise<User | undefined> {
-    return this.userAccount.findOne({ where: { address } });
-}
 
 }

@@ -4,6 +4,7 @@ import { UseraccountService } from './useraccount.service';
 import { UseraccountController } from './useraccount.controller';
 import { User } from 'src/user/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { ProductModule } from 'src/product/product.module';
 
 
 @Module({

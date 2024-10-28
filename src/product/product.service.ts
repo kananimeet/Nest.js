@@ -5,7 +5,7 @@ import { Product } from './product.entity';
 import { promises as fs } from 'fs';
 import { Like } from 'typeorm';
 import { UseraccountService } from 'src/useraccount/useraccount.service'; 
-
+   
 @Injectable()
 export class ProductService {
     constructor(
@@ -34,7 +34,7 @@ export class ProductService {
                 address: userAddress, 
                 imageUpload,
                 quantity,
-                // firstname
+                firstname
              });
             await this.addProduct.save(product);
             return {
@@ -142,27 +142,10 @@ export class ProductService {
     }
 
 
-    //Admin side fetched product
-    // async findAll():Promise<Product[]> {
-    //     return this.addProduct.find();
-    // }
-
-
-    async findAll(): Promise<any[]> {
-        const products = await this.addProduct.find();
-        const productsWithFirstname = await Promise.all(
-            products.map(async (product) => {
-                const userProfile = await this.userAccountService.getUserByAddress(product.address); // Adjust accordingly
-                return {
-                    product,
-                    firstname: userProfile?.firstname || null,
-                };
-            })
-        );
-     return productsWithFirstname;
-     }
-    
-    
+   // Admin side fetched product
+    async findAll():Promise<Product[]> {
+        return this.addProduct.find();
+    }
 
 
     async Delete(id: number): Promise<void> {
